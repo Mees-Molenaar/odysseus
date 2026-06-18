@@ -688,6 +688,10 @@ def setup_note_routes(task_scheduler=None):
             if user is not None and note.owner != user:
                 raise HTTPException(404, "Note not found")
 
+            fields_set = getattr(body, "model_fields_set", None)
+            if fields_set is None:
+                fields_set = getattr(body, "__fields_set__", set())
+
             if body.title is not None:
                 note.title = body.title
             if body.content is not None:
@@ -699,17 +703,17 @@ def setup_note_routes(task_scheduler=None):
                 note.note_type = body.note_type
             if body.color is not None:
                 note.color = body.color
-            if body.label is not None:
+            if "label" in fields_set:
                 note.label = body.label
             if body.pinned is not None:
                 note.pinned = body.pinned
             if body.archived is not None:
                 note.archived = body.archived
-            if body.due_date is not None:
+            if "due_date" in fields_set:
                 note.due_date = body.due_date
             if body.image_url is not None:
                 note.image_url = body.image_url
-            if body.repeat is not None:
+            if "repeat" in fields_set:
                 note.repeat = body.repeat
             if body.sort_order is not None:
                 note.sort_order = body.sort_order
